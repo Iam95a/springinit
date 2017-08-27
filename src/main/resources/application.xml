@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!--开启注解 spring-->
+    <context:annotation-config></context:annotation-config>
+
+    <!--@aspectj支持-->
+    <aop:aspectj-autoproxy/>
+
+    <!--指定扫描路径-->
+    <context:component-scan base-package="com.chen.service">
+    </context:component-scan>
+    <context:component-scan base-package="com.chen.aspect">
+    </context:component-scan>
+    <!--导入jdbc文件-->
+    <context:property-placeholder location="classpath*:jdbc.properties"/>
+
+    <!--定义datasource和transactionManager-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${db.driverClassName}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+        <property name="maxActive" value="${connection.maxActive}"></property>
+        <property name="maxIdle" value="${connection.maxIdle}"></property>
+        <property name="minIdle" value="${connection.minIdle}"></property>
+        <property name="maxWait" value="${connection.maxWait}"></property>
+    </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath*:com/chen/dao/mapping/*.xml"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.chen.dao.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <!--<aop:config>-->
+    <!--<aop:advisor-->
+    <!--pointcut="com.chen.aspect.SystemArchitecture.businessService()"-->
+    <!--advice-ref="tx-advice"/>-->
+    <!--</aop:config>-->
+
+    <!--<tx:advice id="tx-advice">-->
+    <!--<tx:attributes>-->
+    <!--<tx:method name="*" propagation="REQUIRED"/>-->
+    <!--</tx:attributes>-->
+    <!--</tx:advice>-->
+</beans>
