@@ -1,0 +1,66 @@
+package com.chen.util;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+/**
+ * MD5 加密工具类
+ * 
+ * @author andong
+ * 
+ */
+public class Md5Utils {
+	/**
+	 * MD5 加密
+	 */
+	public static String getMD5Str(String str) {
+		if (NullUtil.isNull(str)) {
+			return str;
+		}
+
+		MessageDigest messageDigest = null;
+		try {
+			messageDigest = MessageDigest.getInstance("MD5");
+
+			messageDigest.reset();
+
+			messageDigest.update(str.getBytes("UTF-8"));
+		} catch (NoSuchAlgorithmException e) {
+			System.out.println("NoSuchAlgorithmException caught!");
+			System.exit(-1);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		byte[] byteArray = messageDigest.digest();
+
+		StringBuffer md5StrBuff = new StringBuffer();
+
+		for (int i = 0; i < byteArray.length; i++) {
+			if (Integer.toHexString(0xFF & byteArray[i]).length() == 1) {
+				md5StrBuff.append("0").append(Integer.toHexString(0xFF & byteArray[i]));
+			} else {
+				md5StrBuff.append(Integer.toHexString(0xFF & byteArray[i]));
+			}
+		}
+
+		return md5StrBuff.toString();
+	}
+
+	/**
+	 * SHA-1加密
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String sha1(String str) {
+		if (NullUtil.isNull(str)) {
+			return str;
+		}
+		return DigestUtils.shaHex(str);
+	}
+
+}
