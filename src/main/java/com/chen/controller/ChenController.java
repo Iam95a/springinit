@@ -48,18 +48,4 @@ public class ChenController {
         return map;
     }
 
-    @RequestMapping("/addUserAccount")
-    @ResponseBody
-    public String addUser1() {
-
-        try {
-            boolean insertStatus = userAccountService.addUser();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "失败";
-
-        }
-        return "成功";
-
-    }
 }
