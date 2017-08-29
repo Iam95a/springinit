@@ -21,9 +21,15 @@
     <context:property-placeholder location="classpath*:jdbc.properties"/>
 
 
-    <bean id="jredisConnectionFactory"
-          class="org.springframework.data.redis.connection.jredis.JredisConnectionFactory"
-          p:host-name="198.181.36.102" p:port="6379" />
+
+    <bean id="jedisConnFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+          p:use-pool="true" p:hostName="198.181.36.102" p:port="6379"/>
+
+    <!-- redis template definition -->
+    <bean id="redisTemplate"
+          class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnFactory"/>
 
     <!--定义datasource和transactionManager-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
