@@ -5,6 +5,7 @@ import com.chen.utils.http.HttpUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.http.client.CookieStore;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -87,15 +88,21 @@ public class WeChatService {
         List<Map<String, Object>> contactList = (List<Map<String, Object>>) contactMap.get("MemberList");
         List<WXUserModel> wxUserModels = Lists.newArrayList();
         for (Map<String, Object> userMap : contactList) {
-            WXUserModel wxUserModel = getWCUserModelByContactMap(userMap);
-            wxUserModels.add(wxUserModel);
+            try {
+                WXUserModel wxUserModel = getWCUserModelByContactMap(userMap);
+                wxUserModels.add(wxUserModel);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return wxUserModels;
     }
 
-    public  WXUserModel getWCUserModelByContactMap(Map<String, Object> contactMap) {
+    public  WXUserModel getWCUserModelByContactMap(Map<String, Object> contactMap) throws Exception{
+
         Set<String> keys = contactMap.keySet();
         WXUserModel wxUserModel = new WXUserModel();
+//        BeanUtils.copyProperties(wxUserModel,contactMap);
         for (String key : keys) {
             Class clazz = wxUserModel.getClass();
             try {

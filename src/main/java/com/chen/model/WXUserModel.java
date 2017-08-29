@@ -16,6 +16,160 @@ public class WXUserModel {
     private String signature;
     private String verifyFlag;
     private String ownerUin;
+    private String PYInitial;
+
+    private String PYQuanPin;
+    private  String RemarkPYInitial;
+    private String StarFriend;
+    private String AppAccountFlag;
+    private String Statues;
+    private String AttrStatus;
+    private String Province;
+    private String City;
+    private String Alias;
+    private String SnsFlag;
+    private  String UniFriend;
+    private String DiaplayName;
+    private String ChatRoomId;
+    private String KeyWord;
+    private String EncryChatRoomid;
+    private String IsOwner;
+
+    public String getPYInitial() {
+        return PYInitial;
+    }
+
+    public void setPYInitial(String PYInitial) {
+        this.PYInitial = PYInitial;
+    }
+
+    public String getPYQuanPin() {
+        return PYQuanPin;
+    }
+
+    public void setPYQuanPin(String PYQuanPin) {
+        this.PYQuanPin = PYQuanPin;
+    }
+
+    public String getRemarkPYInitial() {
+        return RemarkPYInitial;
+    }
+
+    public void setRemarkPYInitial(String remarkPYInitial) {
+        RemarkPYInitial = remarkPYInitial;
+    }
+
+    public String getStarFriend() {
+        return StarFriend;
+    }
+
+    public void setStarFriend(String starFriend) {
+        StarFriend = starFriend;
+    }
+
+    public String getAppAccountFlag() {
+        return AppAccountFlag;
+    }
+
+    public void setAppAccountFlag(String appAccountFlag) {
+        AppAccountFlag = appAccountFlag;
+    }
+
+    public String getStatues() {
+        return Statues;
+    }
+
+    public void setStatues(String statues) {
+        Statues = statues;
+    }
+
+    public String getAttrStatus() {
+        return AttrStatus;
+    }
+
+    public void setAttrStatus(String attrStatus) {
+        AttrStatus = attrStatus;
+    }
+
+    public String getProvince() {
+        return Province;
+    }
+
+    public void setProvince(String province) {
+        Province = province;
+    }
+
+    public String getCity() {
+        return City;
+    }
+
+    public void setCity(String city) {
+        City = city;
+    }
+
+    public String getAlias() {
+        return Alias;
+    }
+
+    public void setAlias(String alias) {
+        Alias = alias;
+    }
+
+    public String getSnsFlag() {
+        return SnsFlag;
+    }
+
+    public void setSnsFlag(String snsFlag) {
+        SnsFlag = snsFlag;
+    }
+
+    public String getUniFriend() {
+        return UniFriend;
+    }
+
+    public void setUniFriend(String uniFriend) {
+        UniFriend = uniFriend;
+    }
+
+    public String getDiaplayName() {
+        return DiaplayName;
+    }
+
+    public void setDiaplayName(String diaplayName) {
+        DiaplayName = diaplayName;
+    }
+
+    public String getChatRoomId() {
+        return ChatRoomId;
+    }
+
+    public void setChatRoomId(String chatRoomId) {
+        ChatRoomId = chatRoomId;
+    }
+
+    public String getKeyWord() {
+        return KeyWord;
+    }
+
+    public void setKeyWord(String keyWord) {
+        KeyWord = keyWord;
+    }
+
+    public String getEncryChatRoomid() {
+        return EncryChatRoomid;
+    }
+
+    public void setEncryChatRoomid(String encryChatRoomid) {
+        EncryChatRoomid = encryChatRoomid;
+    }
+
+    public String getIsOwner() {
+        return IsOwner;
+    }
+
+    public void setIsOwner(String isOwner) {
+        IsOwner = isOwner;
+    }
 
     public String getUin() {
         return uin;
