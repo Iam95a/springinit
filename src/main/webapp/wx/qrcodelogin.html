@@ -19,6 +19,22 @@
             url=decodeURIComponent(url);
             $("#qrcode").attr("src",url);
         }
-    })
+    });
+    setTimeout("autoLogin()",3000);
+    function autoLogin(){
+        $.ajax({
+            url:'/weChat/scanIfLogin',
+            type:'POST',
+            async:false,
+            dataType:'json',
+            success:function(result){
+                if(result&&result.ok){
+                    window.location.href='index.html';
+                }else{
+                    setTimeout("autoLogin()",3000);
+                }
+            }
+        });
+    }
 </script>
 </html>
