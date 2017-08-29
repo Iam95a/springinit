@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二维码登录</title>
+</head>
+<body>
+<img id="qrcode" style="width: 400px;height: auto">
+</body>
+<script src="/res/js/jquery-3.2.1.min.js"></script>
+<script>
+    $.ajax({
+        url:'/weChat/getQrCodeUrl',
+        type:'GET',
+        async:false,
+        dataType:'json',
+        success:function(result){
+            var url=result.data;
+            url=decodeURIComponent(url);
+            $("#qrcode").attr("src",url);
+        }
+    })
+</script>
+</html>
