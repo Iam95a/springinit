@@ -1,5 +1,6 @@
 package com.chen.service.wx;
 
+import com.chen.model.WXLoginParamModel;
 import com.chen.model.WXUserModel;
 import com.chen.utils.http.HttpUtil;
 import com.google.common.collect.Lists;
@@ -11,12 +12,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -26,7 +23,6 @@ public class WeChatService {
      * 登录后获取跳转url
      *
      * @param qrcodeUrl 二维码地址
-     * @return
      */
     public String scanThenGetRedirectUrl(String qrcodeUrl) {
         long timeStramp = new Date().getTime();
@@ -45,11 +41,20 @@ public class WeChatService {
         }
     }
 
+    /**
+     * 根据获取的跳转链接获取cookiestore来保存登录信息
+     * 以及获取其它信息所用的参数
+     */
     public Map<String, Object> getLoginParamByRedirectUrl(String redirectUrl) {
         Map<String, Object> resultAndCookieStore = HttpUtil.getByUTF8AndStoreCookie(redirectUrl + "&fun=new&version=v2");
         return resultAndCookieStore;
     }
-    public  Map<String, String> parseLoginParamStr2Map(String loginParamStr)throws  Exception {
+
+
+    /**
+     * 将登录参数转化为model
+     */
+    public WXLoginParamModel parseLoginParamStr2WXLoginParamModel(String loginParamStr) throws Exception {
         try {
             Document document = DocumentHelper.parseText(loginParamStr);
             Element xml = document.getRootElement();
@@ -63,22 +68,25 @@ public class WeChatService {
                     e.printStackTrace();
                 }
             }
-            return loginParam;
+            WXLoginParamModel wxLoginParamModel = new WXLoginParamModel();
+            BeanUtils.copyProperties(wxLoginParamModel, loginParam);
+            return wxLoginParamModel;
         } catch (DocumentException e) {
-            throw  e;
+            throw e;
         }
 
     }
-    public List<WXUserModel> listWXUserModel(Map<String, String> loginParam,CookieStore cookieStore) {
-        String wxContactStr = listWxContact(loginParam, cookieStore);
+
+    public List<WXUserModel> listWXUserModel(WXLoginParamModel wxLoginParamModel, CookieStore cookieStore) {
+        String wxContactStr = listWxContact(wxLoginParamModel, cookieStore);
         return listWXUserModelByWXContactStr(wxContactStr);
     }
-    public  String listWxContact(Map<String, String> loginParam, CookieStore cookieStore) {
+
+    public String listWxContact(WXLoginParamModel wxLoginParamModel, CookieStore cookieStore) {
         String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxgetcontact?lang=zh_CN&pass_ticket=" +
-                loginParam.get("pass_ticket") +
+                wxLoginParamModel.getPass_ticket() +
                 "&r=" + new Date().getTime() +
-                "&seq=0&skey=" + loginParam.get("skey");
-        System.out.println(url);
+                "&seq=0&skey=" + wxLoginParamModel.getSkey();
         return HttpUtil.getByUTF8(url, cookieStore);
     }
 
@@ -98,7 +106,10 @@ public class WeChatService {
         return wxUserModels;
     }
 
-    public  WXUserModel getWCUserModelByContactMap(Map<String, Object> contactMap) throws Exception{
+    /**
+     * 将map转化为model
+     */
+    public WXUserModel getWCUserModelByContactMap(Map<String, Object> contactMap) throws Exception {
 
         Set<String> keys = contactMap.keySet();
         WXUserModel wxUserModel = new WXUserModel();
@@ -106,6 +117,9 @@ public class WeChatService {
         for (String key : keys) {
             Class clazz = wxUserModel.getClass();
             try {
+                if (key.equalsIgnoreCase("MemberList")) {
+                    continue;
+                }
                 Method method = clazz.getMethod("set" + key, String.class);
                 String val = null;
                 try {
@@ -135,13 +149,14 @@ public class WeChatService {
         }
         return null;
     }
-    public  String sendWXMsg(WXUserModel selfUserModel, WXUserModel wxUserModel, String content, CookieStore cookieStore, Map<String, String> loginParam) {
+
+    public String sendWXMsg(WXUserModel selfUserModel, WXUserModel wxUserModel, String content, CookieStore cookieStore, WXLoginParamModel wxLoginParamModel) {
         String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxsendmsg?lang=zh_CN&pass_ticket=" +
-                loginParam.get("pass_ticket");
+                wxLoginParamModel.getPass_ticket();
         Map<String, Object> requestParam = Maps.newHashMap();
         Map<String, Object> param = null;
-         Map<String, String> baseRequest=Maps.newHashMap();
-        baseRequest=setBaseRequest(loginParam,baseRequest);
+        Map<String, String> baseRequest = Maps.newHashMap();
+        baseRequest = setBaseRequest(wxLoginParamModel, baseRequest);
         requestParam.put("BaseRequest", baseRequest);
         param = Maps.newHashMap();
         String clientMsgId = ((Long) ((new Date().getTime()) << 4)).toString() + (((Double) (Math.random() * 10000)).longValue());
@@ -159,14 +174,24 @@ public class WeChatService {
                 null, cookieStore);
         return result;
     }
-    public  Map<String, String> setBaseRequest(Map<String, String> loginParam,Map<String,String> baseRequest) {
+
+    /**
+     * 获取基本请求参数,返回参数形如下
+     * {
+     *     "DeviceID":""，//e+15位随机数，
+     *     "Sid":"",
+     *     "Skey":"",
+     *     "Uin":""
+     * }
+     */
+    public Map<String, String> setBaseRequest(WXLoginParamModel wxLoginParamModel, Map<String, String> baseRequest) {
         baseRequest = Maps.newHashMap();
         String DeviceID = "e" + ((Double) (Math.random() * (1000000000000000L))).longValue();
 
         baseRequest.put("DeviceID", DeviceID);
-        baseRequest.put("Sid", loginParam.get("wxsid"));
-        baseRequest.put("Skey", loginParam.get("skey"));
-        baseRequest.put("Uin", loginParam.get("wxuin"));
+        baseRequest.put("Sid",wxLoginParamModel.getWxsid());
+        baseRequest.put("Skey",wxLoginParamModel.getSkey());
+        baseRequest.put("Uin",wxLoginParamModel.getWxuin());
         return baseRequest;
     }
 

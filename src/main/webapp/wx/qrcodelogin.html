@@ -10,28 +10,30 @@
 <script src="/res/js/jquery-3.2.1.min.js"></script>
 <script>
     $.ajax({
-        url:'/weChat/getQrCodeUrl',
-        type:'GET',
-        async:false,
-        dataType:'json',
-        success:function(result){
-            var url=result.data;
-            url=decodeURIComponent(url);
-            $("#qrcode").attr("src",url);
+        url: '/weChat/getQrCodeUrl',
+        type: 'GET',
+        async: false,
+        dataType: 'json',
+        success: function (result) {
+            var url = result.data;
+            url = decodeURIComponent(url);
+            $("#qrcode").attr("src", url);
         }
     });
-    setTimeout("autoLogin()",3000);
-    function autoLogin(){
+    setTimeout("autoLogin()", 3000);
+
+    function autoLogin() {
         $.ajax({
-            url:'/weChat/scanIfLogin',
-            type:'POST',
-            async:false,
-            dataType:'json',
-            success:function(result){
-                if(result&&result.ok){
-                    window.location.href='index.html';
-                }else{
-                    setTimeout("autoLogin()",3000);
+            url: '/weChat/scanIfLogin',
+            type: 'POST',
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                console.log(result);
+                if (result && result.isOk) {
+                    window.location.href = 'index.html';
+                } else {
+                    setTimeout("autoLogin()", 3000);
                 }
             }
         });

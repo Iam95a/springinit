@@ -25,6 +25,9 @@ public class RedisService {
         valueOps.set(key,value,30, TimeUnit.MINUTES);
     }
 
+    /**
+     * 根据键从redis中获取值 并且延长值的生命周期
+     */
     public Object getByKey(String key){
 
         Object value=valueOps.get(key);

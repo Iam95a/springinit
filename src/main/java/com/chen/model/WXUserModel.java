@@ -1,5 +1,7 @@
 package com.chen.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by ch on 2017/6/28.
  */
@@ -16,160 +18,182 @@ public class WXUserModel {
     private String signature;
     private String verifyFlag;
     private String ownerUin;
-    private String PYInitial;
+    private String pYInitial;
+    private String remarkPYQuanPin;
+    private String pYQuanPin;
+    private  String remarkPYInitial;
+    private String starFriend;
+    private String appAccountFlag;
+    private String statues;
+    private String attrStatus;
+    private String province;
+    private String city;
+    private String alias;
+    private String snsFlag;
+    private  String uniFriend;
+    private String displayName;
+    private String chatRoomId;
+    private String keyWord;
+    private String encryChatRoomId;
+    private String isOwner;
+    private ArrayList<Object> memberList;
 
-    private String PYQuanPin;
-    private  String RemarkPYInitial;
-    private String StarFriend;
-    private String AppAccountFlag;
-    private String Statues;
-    private String AttrStatus;
-    private String Province;
-    private String City;
-    private String Alias;
-    private String SnsFlag;
-    private  String UniFriend;
-    private String DiaplayName;
-    private String ChatRoomId;
-    private String KeyWord;
-    private String EncryChatRoomid;
-    private String IsOwner;
+
+    public ArrayList<Object> getMemberList() {
+        return memberList;
+    }
 
     public String getPYInitial() {
-        return PYInitial;
+        return pYInitial;
     }
 
     public void setPYInitial(String PYInitial) {
-        this.PYInitial = PYInitial;
-    }
-
-    public String getPYQuanPin() {
-        return PYQuanPin;
-    }
-
-    public void setPYQuanPin(String PYQuanPin) {
-        this.PYQuanPin = PYQuanPin;
-    }
-
-    public String getRemarkPYInitial() {
-        return RemarkPYInitial;
-    }
-
-    public void setRemarkPYInitial(String remarkPYInitial) {
-        RemarkPYInitial = remarkPYInitial;
-    }
-
-    public String getStarFriend() {
-        return StarFriend;
-    }
-
-    public void setStarFriend(String starFriend) {
-        StarFriend = starFriend;
-    }
-
-    public String getAppAccountFlag() {
-        return AppAccountFlag;
-    }
-
-    public void setAppAccountFlag(String appAccountFlag) {
-        AppAccountFlag = appAccountFlag;
+        this.pYInitial = PYInitial;
     }
 
     public String getStatues() {
-        return Statues;
+        return statues;
     }
 
     public void setStatues(String statues) {
-        Statues = statues;
+        this.statues = statues;
     }
 
+    public void setMemberList(ArrayList<Object> memberList) {
+        this.memberList = memberList;
+    }
+
+    public String getRemarkPYQuanPin() {
+        return remarkPYQuanPin;
+    }
+
+    public void setRemarkPYQuanPin(String remarkPYQuanPin) {
+        this.remarkPYQuanPin = remarkPYQuanPin;
+    }
+
+    public String getPYQuanPin() {
+        return pYQuanPin;
+    }
+
+    public void setPYQuanPin(String PYQuanPin) {
+        this.pYQuanPin = pYQuanPin;
+    }
+
+    public String getRemarkPYInitial() {
+        return remarkPYInitial;
+    }
+
+    public void setRemarkPYInitial(String remarkPYInitial) {
+        this.remarkPYInitial = remarkPYInitial;
+    }
+
+    public String getStarFriend() {
+        return starFriend;
+    }
+
+    public void setStarFriend(String starFriend) {
+        this.starFriend = starFriend;
+    }
+
+    public String getAppAccountFlag() {
+        return appAccountFlag;
+    }
+
+    public void setAppAccountFlag(String appAccountFlag) {
+        this.appAccountFlag = appAccountFlag;
+    }
+
+
+
     public String getAttrStatus() {
-        return AttrStatus;
+        return attrStatus;
     }
 
     public void setAttrStatus(String attrStatus) {
-        AttrStatus = attrStatus;
+        this.attrStatus = attrStatus;
     }
 
     public String getProvince() {
-        return Province;
+        return province;
     }
 
     public void setProvince(String province) {
-        Province = province;
+        this.province = province;
     }
 
     public String getCity() {
-        return City;
+        return city;
     }
 
     public void setCity(String city) {
-        City = city;
+        this.city = city;
     }
 
     public String getAlias() {
-        return Alias;
+        return alias;
     }
 
     public void setAlias(String alias) {
-        Alias = alias;
+        this.alias = alias;
     }
 
     public String getSnsFlag() {
-        return SnsFlag;
+        return snsFlag;
     }
 
     public void setSnsFlag(String snsFlag) {
-        SnsFlag = snsFlag;
+        this.snsFlag = snsFlag;
     }
 
     public String getUniFriend() {
-        return UniFriend;
+        return uniFriend;
     }
 
     public void setUniFriend(String uniFriend) {
-        UniFriend = uniFriend;
+        this.uniFriend = uniFriend;
     }
 
-    public String getDiaplayName() {
-        return DiaplayName;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setDiaplayName(String diaplayName) {
-        DiaplayName = diaplayName;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getChatRoomId() {
-        return ChatRoomId;
+        return chatRoomId;
     }
 
     public void setChatRoomId(String chatRoomId) {
-        ChatRoomId = chatRoomId;
+        this.chatRoomId = chatRoomId;
     }
 
     public String getKeyWord() {
-        return KeyWord;
+        return keyWord;
     }
 
     public void setKeyWord(String keyWord) {
-        KeyWord = keyWord;
+        this.keyWord = keyWord;
     }
 
-    public String getEncryChatRoomid() {
-        return EncryChatRoomid;
+    public String getEncryChatRoomId() {
+        return encryChatRoomId;
     }
 
-    public void setEncryChatRoomid(String encryChatRoomid) {
-        EncryChatRoomid = encryChatRoomid;
+    public void setEncryChatRoomId(String encryChatRoomId) {
+        this.encryChatRoomId = encryChatRoomId;
     }
 
     public String getIsOwner() {
-        return IsOwner;
+        return isOwner;
     }
 
     public void setIsOwner(String isOwner) {
-        IsOwner = isOwner;
+        this.isOwner = isOwner;
     }
+
+
 
     public String getUin() {
         return uin;

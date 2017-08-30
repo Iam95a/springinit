@@ -1,6 +1,7 @@
 package com.chen.controller.wx;
 
 import com.chen.common.Result;
+import com.chen.model.WXLoginParamModel;
 import com.chen.model.WXUserModel;
 import com.chen.service.redis.RedisService;
 import com.chen.service.wx.WeChatService;
@@ -52,11 +53,13 @@ public class WeChatController {
             String redirectUrl = weChatService.scanThenGetRedirectUrl(qrcodeUrl);
             Map<String, Object> resultAndCookieStore = weChatService.getLoginParamByRedirectUrl(redirectUrl);
             CookieStore cookieStore = (CookieStore) resultAndCookieStore.get("cookieStore");
-            Map<String, String> loginParam = weChatService.parseLoginParamStr2Map((String)resultAndCookieStore.get("result"));
-            List<WXUserModel> wxUserModels=weChatService.listWXUserModel(loginParam,cookieStore);
+
+            WXLoginParamModel wxLoginParamModel=
+                    weChatService.parseLoginParamStr2WXLoginParamModel((String)resultAndCookieStore.get("result"));
+            List<WXUserModel> wxUserModels=weChatService.listWXUserModel(wxLoginParamModel,cookieStore);
             WXUserModel wxUserModel = weChatService.getByUserName(wxUserModels, "老婆");
             WXUserModel selfWXUserModel = weChatService.getByUserName(wxUserModels, "gold great");
-            weChatService.sendWXMsg(selfWXUserModel, wxUserModel, "你在干嘛啊", cookieStore, loginParam);
+            weChatService.sendWXMsg(selfWXUserModel, wxUserModel, "你在干嘛啊", cookieStore, wxLoginParamModel);
             return new Result<>(true,0,"登录成功",null);
         } catch (Exception e) {
             e.printStackTrace();
