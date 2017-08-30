@@ -1,5 +1,9 @@
 package com.chen.service.wx;
 
+import com.chen.dao.mapper.WXUserConcactMapper;
+import com.chen.dao.mapper.WXUserMapper;
+import com.chen.entity.WXUser;
+import com.chen.entity.WXUserConcact;
 import com.chen.model.WXLoginParamModel;
 import com.chen.model.WXUserModel;
 import com.chen.utils.http.HttpUtil;
@@ -12,13 +16,18 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.*;
 
 @Service
 public class WeChatService {
+    private static Logger Log = LoggerFactory.getLogger(WeChatService.class);
+
     /**
      * 登录后获取跳转url
      *
@@ -77,9 +86,42 @@ public class WeChatService {
 
     }
 
-    public List<WXUserModel> listWXUserModel(WXLoginParamModel wxLoginParamModel, CookieStore cookieStore) {
+    /**
+     * 微信登陆后 获取初始化信息
+     */
+    public String getInitInfo(WXLoginParamModel model, CookieStore cookieStore) {
+        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=" + new Date().getTime() + "&pass_ticket=" + model.getPass_ticket();
+        Map<String, String> baseRequest = Maps.newHashMap();
+        baseRequest = setBaseRequest(model, baseRequest);
+        Map<String, Object> requestParam = Maps.newHashMap();
+        requestParam.put("BaseRequest", baseRequest);
+        //result中包含初始化信息  最近联系人等等
+        String result = HttpUtil.postJsonWithCookies(url, new Gson().toJson(requestParam),
+                null, cookieStore);
+        Gson gson = new Gson();
+        Map<String, Object> map = gson.fromJson(result, Map.class);
+        Map<String, Object> userMap = (Map<String, Object>) map.get("User");
+        WXUserModel user = new WXUserModel();
+        try {
+            user = getWCUserModelByContactMap(userMap);
+        } catch (Exception e) {
+            Log.error(e.getMessage());
+        }
+        if(user!=null){
+            WXUser wxUser=wxUserMapper.getUserByUin(user.getUin());
+            if(wxUser==null){
+                wxUserMapper.insertByModel(user);
+            }
+        }
+        return user.getUin();
+    }
+
+    @Resource
+    private WXUserMapper wxUserMapper;
+
+    public List<WXUserModel> listWXUserModel(WXLoginParamModel wxLoginParamModel, CookieStore cookieStore,String uin) {
         String wxContactStr = listWxContact(wxLoginParamModel, cookieStore);
-        return listWXUserModelByWXContactStr(wxContactStr);
+        return listWXUserModelByWXContactStr(wxContactStr,uin);
     }
 
     public String listWxContact(WXLoginParamModel wxLoginParamModel, CookieStore cookieStore) {
@@ -90,7 +132,9 @@ public class WeChatService {
         return HttpUtil.getByUTF8(url, cookieStore);
     }
 
-    public List<WXUserModel> listWXUserModelByWXContactStr(String wxContactStr) {
+    @Resource
+    private WXUserConcactMapper wxUserConcactMapper;
+    public List<WXUserModel> listWXUserModelByWXContactStr(String wxContactStr,String uin) {
         Gson gson = new Gson();
         Map<String, Object> contactMap = gson.fromJson(wxContactStr, Map.class);
         List<Map<String, Object>> contactList = (List<Map<String, Object>>) contactMap.get("MemberList");
@@ -98,6 +142,13 @@ public class WeChatService {
         for (Map<String, Object> userMap : contactList) {
             try {
                 WXUserModel wxUserModel = getWCUserModelByContactMap(userMap);
+                WXUserConcact wxUserConcact=new WXUserConcact();
+                wxUserConcact.setUnionid(uin);
+                BeanUtils.copyProperties(wxUserConcact,wxUserModel);
+                WXUserConcact userConcact=wxUserConcactMapper.getByUnionIdAndNickName(wxUserConcact);
+                if(userConcact==null) {
+                    wxUserConcactMapper.insert(wxUserConcact);
+                }
                 wxUserModels.add(wxUserModel);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -113,7 +164,6 @@ public class WeChatService {
 
         Set<String> keys = contactMap.keySet();
         WXUserModel wxUserModel = new WXUserModel();
-//        BeanUtils.copyProperties(wxUserModel,contactMap);
         for (String key : keys) {
             Class clazz = wxUserModel.getClass();
             try {
@@ -166,10 +216,8 @@ public class WeChatService {
         param.put("LocalID", clientMsgId);
         param.put("ToUserName", wxUserModel.getUserName());
         param.put("Type", 1);
-
         requestParam.put("Msg", param);
         requestParam.put("Scene", 0);
-
         String result = HttpUtil.postJsonWithCookies(url, new Gson().toJson(requestParam),
                 null, cookieStore);
         return result;
@@ -178,10 +226,10 @@ public class WeChatService {
     /**
      * 获取基本请求参数,返回参数形如下
      * {
-     *     "DeviceID":""，//e+15位随机数，
-     *     "Sid":"",
-     *     "Skey":"",
-     *     "Uin":""
+     * "DeviceID":""，//e+15位随机数，
+     * "Sid":"",
+     * "Skey":"",
+     * "Uin":""
      * }
      */
     public Map<String, String> setBaseRequest(WXLoginParamModel wxLoginParamModel, Map<String, String> baseRequest) {
@@ -189,9 +237,9 @@ public class WeChatService {
         String DeviceID = "e" + ((Double) (Math.random() * (1000000000000000L))).longValue();
 
         baseRequest.put("DeviceID", DeviceID);
-        baseRequest.put("Sid",wxLoginParamModel.getWxsid());
-        baseRequest.put("Skey",wxLoginParamModel.getSkey());
-        baseRequest.put("Uin",wxLoginParamModel.getWxuin());
+        baseRequest.put("Sid", wxLoginParamModel.getWxsid());
+        baseRequest.put("Skey", wxLoginParamModel.getSkey());
+        baseRequest.put("Uin", wxLoginParamModel.getWxuin());
         return baseRequest;
     }
 

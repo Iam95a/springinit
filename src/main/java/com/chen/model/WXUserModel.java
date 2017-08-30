@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * Created by ch on 2017/6/28.
  */
 public class WXUserModel {
+    private Integer id;
     private String uin;
     private String userName;
     private String nickName;
@@ -38,6 +39,13 @@ public class WXUserModel {
     private String isOwner;
     private ArrayList<Object> memberList;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public ArrayList<Object> getMemberList() {
         return memberList;

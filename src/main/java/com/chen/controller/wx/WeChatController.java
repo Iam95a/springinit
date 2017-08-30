@@ -54,17 +54,19 @@ public class WeChatController {
             Map<String, Object> resultAndCookieStore = weChatService.getLoginParamByRedirectUrl(redirectUrl);
             CookieStore cookieStore = (CookieStore) resultAndCookieStore.get("cookieStore");
 
-            WXLoginParamModel wxLoginParamModel=
-                    weChatService.parseLoginParamStr2WXLoginParamModel((String)resultAndCookieStore.get("result"));
-            List<WXUserModel> wxUserModels=weChatService.listWXUserModel(wxLoginParamModel,cookieStore);
+            WXLoginParamModel wxLoginParamModel =
+                    weChatService.parseLoginParamStr2WXLoginParamModel((String) resultAndCookieStore.get("result"));
+            String uin=weChatService.getInitInfo(wxLoginParamModel, cookieStore);
+
+            List<WXUserModel> wxUserModels = weChatService.listWXUserModel(wxLoginParamModel, cookieStore,uin);
             WXUserModel wxUserModel = weChatService.getByUserName(wxUserModels, "老婆");
             WXUserModel selfWXUserModel = weChatService.getByUserName(wxUserModels, "gold great");
             weChatService.sendWXMsg(selfWXUserModel, wxUserModel, "你在干嘛啊", cookieStore, wxLoginParamModel);
-            return new Result<>(true,0,"登录成功",null);
+            return new Result<>(true, 0, "登录成功", null);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new Result<>(false,0,"出现异常",null);
+        return new Result<>(false, 0, "出现异常", null);
 
     }
 }
