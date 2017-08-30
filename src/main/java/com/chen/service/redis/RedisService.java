@@ -26,6 +26,11 @@ public class RedisService {
     }
 
     public Object getByKey(String key){
+
+        Object value=valueOps.get(key);
+        if(value!=null) {
+            valueOps.set(key, value, 30, TimeUnit.MINUTES);
+        }
         return valueOps.get(key);
     }
 }
