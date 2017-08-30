@@ -1,5 +1,8 @@
 package com.chen.model;
 
+
+import org.apache.http.client.CookieStore;
+
 public class WXLoginParamModel {
     private String ret;
     private String pass_ticket;
@@ -8,6 +11,16 @@ public class WXLoginParamModel {
     private String message;
     private String wxuin;
     private String isgrayscale;
+
+    private CookieStore cookieStore;
+
+    public CookieStore getCookieStore() {
+        return cookieStore;
+    }
+
+    public void setCookieStore(CookieStore cookieStore) {
+        this.cookieStore = cookieStore;
+    }
 
     public String getRet() {
         return ret;

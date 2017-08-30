@@ -50,18 +50,15 @@ public class WeChatController {
     public Result<Object> scanIfLogin(@CookieValue("uniqueid") String cookie) {
         try {
             String qrcodeUrl = (String) redisService.getByKey(cookie);
+            //用户已经登录后可获取redirect_url  不然报错
             String redirectUrl = weChatService.scanThenGetRedirectUrl(qrcodeUrl);
-            Map<String, Object> resultAndCookieStore = weChatService.getLoginParamByRedirectUrl(redirectUrl);
-            CookieStore cookieStore = (CookieStore) resultAndCookieStore.get("cookieStore");
-
-            WXLoginParamModel wxLoginParamModel =
-                    weChatService.parseLoginParamStr2WXLoginParamModel((String) resultAndCookieStore.get("result"));
-            String uin=weChatService.getInitInfo(wxLoginParamModel, cookieStore);
-
-            List<WXUserModel> wxUserModels = weChatService.listWXUserModel(wxLoginParamModel, cookieStore,uin);
+            WXLoginParamModel model =weChatService.getLoginParamByRedirectUrl(redirectUrl);
+            redisService.addKeyValueExpiredInThiryMinutes(cookie,model);
+            String uin=weChatService.getInitInfo(model, model.getCookieStore());
+            List<WXUserModel> wxUserModels = weChatService.listWXUserModel(model, model.getCookieStore(),uin);
             WXUserModel wxUserModel = weChatService.getByUserName(wxUserModels, "老婆");
             WXUserModel selfWXUserModel = weChatService.getByUserName(wxUserModels, "gold great");
-            weChatService.sendWXMsg(selfWXUserModel, wxUserModel, "你在干嘛啊", cookieStore, wxLoginParamModel);
+            weChatService.sendWXMsg(selfWXUserModel, wxUserModel, "我爱你", model.getCookieStore(), model);
             return new Result<>(true, 0, "登录成功", null);
         } catch (Exception e) {
             e.printStackTrace();

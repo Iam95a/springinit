@@ -54,9 +54,16 @@ public class WeChatService {
      * 根据获取的跳转链接获取cookiestore来保存登录信息
      * 以及获取其它信息所用的参数
      */
-    public Map<String, Object> getLoginParamByRedirectUrl(String redirectUrl) {
+    public WXLoginParamModel getLoginParamByRedirectUrl(String redirectUrl) {
         Map<String, Object> resultAndCookieStore = HttpUtil.getByUTF8AndStoreCookie(redirectUrl + "&fun=new&version=v2");
-        return resultAndCookieStore;
+        WXLoginParamModel wxLoginParamModel=null;
+        try {
+            wxLoginParamModel=parseLoginParamStr2WXLoginParamModel((String) resultAndCookieStore.get("result"));
+            wxLoginParamModel.setCookieStore( (CookieStore) resultAndCookieStore.get("cookieStore"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return wxLoginParamModel;
     }
 
 

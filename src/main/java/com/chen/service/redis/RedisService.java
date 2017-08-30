@@ -21,7 +21,7 @@ public class RedisService {
     /**
      * 给redis添加键值对 30分钟过期
      */
-    public void addKeyValueExpiredInThiryMinutes(String key, String value) {
+    public void addKeyValueExpiredInThiryMinutes(String key, Object value) {
         valueOps.set(key,value,30, TimeUnit.MINUTES);
     }
 
