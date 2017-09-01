@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class RedisService {
+    @SuppressWarnings("SpringAutowiredFieldsWarningInspection")
     @Autowired
     private RedisTemplate<String, String> template;
 

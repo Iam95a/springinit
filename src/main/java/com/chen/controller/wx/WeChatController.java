@@ -53,7 +53,7 @@ public class WeChatController {
             //用户已经登录后可获取redirect_url  不然报错
             String redirectUrl = weChatService.scanThenGetRedirectUrl(qrcodeUrl);
             WXLoginParamModel model =weChatService.getLoginParamByRedirectUrl(redirectUrl);
-            redisService.addKeyValueExpiredInThiryMinutes(cookie,model);
+//            redisService.addKeyValueExpiredInThiryMinutes(cookie,model);
             String uin=weChatService.getInitInfo(model, model.getCookieStore());
             List<WXUserModel> wxUserModels = weChatService.listWXUserModel(model, model.getCookieStore(),uin);
             WXUserModel wxUserModel = weChatService.getByUserName(wxUserModels, "老婆");
