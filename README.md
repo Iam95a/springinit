@@ -5,3 +5,4 @@
 ###数据库表根据sql自建
 ###deploy.bat可自动一键部署  其中的tomcat目录和war所在目录请自行设置
 ###deploy.bat依赖gradlecleanwar.bat
+###使用deploy需要设置CATALINA_HOME为tomcat根目录

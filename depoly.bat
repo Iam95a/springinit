@@ -2,13 +2,19 @@
 ::gradle clean war
 call gradlecleanwar.bat
 echo start shutdown tomcat
-call E:\tomcat\tomcat8\bin\shutdown.bat
+call "%CATALINA_HOME%\bin\shutdown.bat"
 echo call success
-rd /s /Q e:\tomcat\tomcat8\webapps
+echo "%CATALINA_HOME%\webapps"
+::pause
+rd /s /Q "%CATALINA_HOME%\webapps"
 echo delete success
-md E:\tomcat\tomcat8\webapps
+::pause
+md "%CATALINA_HOME%\webapps"
 echo mdsuccess
-move E:\git\springinit\target\libs\springinit-1.0-SNAPSHOT.war E:\tomcat\tomcat8\webapps\
+set "CURRENT_DIR=%cd%"
+echo "%CURRENT_DIR%\target\libs\springinit-1.0-SNAPSHOT.war"
+move "%CURRENT_DIR%\target\libs\springinit-1.0-SNAPSHOT.war" "%CATALINA_HOME%\webapps\"
 echo move success
-call E:\tomcat\tomcat8\bin\startup.bat
+::pause
+call "%CATALINA_HOME%\bin\startup.bat"
 
