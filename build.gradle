@@ -38,7 +38,7 @@ ssh.settings {
 
 remotes {
     deployServer {
-        host = '198.181.36.102'
+        host = '97.64.80.66'
         user = 'root'
         password = 'CP4f66h4j8My'
         port = 27222
