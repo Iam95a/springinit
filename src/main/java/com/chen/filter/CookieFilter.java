@@ -18,25 +18,32 @@ public class CookieFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        Cookie[] cookies = httpServletRequest.getCookies();
-        String uniqueid = null;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equalsIgnoreCase("uniqueid")) {
-                uniqueid = cookie.getValue();
+        try {
+            HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+            Cookie[] cookies = httpServletRequest.getCookies();
+            String uniqueid = null;
+            if(cookies!=null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equalsIgnoreCase("uniqueid")) {
+                        uniqueid = cookie.getValue();
+                    }
+                }
             }
-        }
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        if (StringUtils.isEmpty(uniqueid) || StringUtils.isBlank(uniqueid)) {
-            uniqueid = UuidUtils.generalUUID();
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            if (StringUtils.isEmpty(uniqueid) || StringUtils.isBlank(uniqueid)) {
+                uniqueid = UuidUtils.generalUUID();
 
-            Cookie mycookies = new Cookie("uniqueid", uniqueid);
-            mycookies.setMaxAge(-1);
-            mycookies.setPath("/");
-            httpServletResponse.addCookie(mycookies);
+                Cookie mycookies = new Cookie("uniqueid", uniqueid);
+                mycookies.setMaxAge(-1);
+                mycookies.setPath("/");
+                httpServletResponse.addCookie(mycookies);
+            }
+            chain.doFilter(httpServletRequest,
+                    httpServletResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            chain.doFilter(request, response);
         }
-        chain.doFilter(httpServletRequest,
-                httpServletResponse);
     }
 
     @Override
