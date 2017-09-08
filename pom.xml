@@ -15,6 +15,13 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.15.Final</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
         <dependency>
             <groupId>org.aspectj</groupId>
