@@ -3,8 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>nihao</title>
+    <style>
+        table {
+            width: 100%;
+        }
+
+        td {
+            width: 33.3%;
+        }
+        #time1{
+            color: red;
+        }
+    </style>
 </head>
 <body>
-hello world
+<table>
+    <tr>
+        <td>id</td>
+        <td>时间</td>
+        <td>备注</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td id="time1">20170909</td>
+        <td>第一个</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>20170910</td>
+        <td>第二个</td>
+    </tr>
+</table>
 </body>
+<script type="text/javascript">
+    var time1=document.querySelector("#time1");
+    var value=time1.innerHTML;
+    alert(value);
+</script>
 </html>

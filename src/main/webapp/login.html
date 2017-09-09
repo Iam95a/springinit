@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <style>
+        .loginForm {
+            margin: 0 auto;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<div class="loginForm">
+    <div>
+        <input id='username' type="text">
+    </div>
+    <div>
+        <input id='pwd' type="password">
+    </div>
+
+    <div>
+        <input type="button" value="登录" onclick="login()">
+        <input type="button" value="取消">
+    </div>
+</div>
+</body>
+<script>
+
+    function login() {
+        var formData = new FormData();
+
+        formData.append("username", "chen");
+        formData.append("pwd", 123456);
+
+
+        var request = new XMLHttpRequest();
+
+        request.open("POST", "/login/login?");
+        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.send("username=1234&pwd=1234")
+
+        request.onreadystatechange = function () {
+            if (request.readyState == 4) {
+                if (request.status == 200) {
+                    console.log(request.responseText);
+                }
+            }
+        }
+    }
+
+
+</script>
+</html>
